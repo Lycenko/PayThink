@@ -1,0 +1,187 @@
+sudo ruby /usr/local/rvm/gems/ruby-1.9.3-p194/gems/soap4r-ruby1.9-2.0.5/bin/wsdl2ruby.rb --wsdl http://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx?WSDL --type client
+
+
+ruby /usr/local/rvm/gems/ruby-1.9.3-p194/gems/soap4r-ruby1.9-2.0.5/bin/wsdl2ruby.rb --wsdl http://192.168.100.200:8181/keram/ws/ConfirmationOfOrders.1cws?wsdl --type client
+
+require 'rubygems'
+#gem 'soap4r' or require 'soap4r-middleware'
+gem 'soap4r-ruby1.9'
+require './ConfirmationOfOrdersDriver.rb'
+
+serv = ConfirmationOfOrdersPortType.new
+serv.wiredump_dev = STDERR
+request = GetInfoOrders.new
+response = serv.getInfoOrders(request)
+
+#response.m_return.methods.sort
+#/usr/local/rvm/gems/ruby-1.9.3-p194/gems/soap4r-ruby1.9-2.0.0/bin/wsdl2ruby.rb
+items = response.m_return.m_
++
+items.each do |item|
+  puts "---------------------------------"
+  puts "ЗаявкаНаРасходование: " + item['ЗаявкаНаРасходование']
+  puts "НомерЗаявки: " + item['НомерЗаявки'].strip
+  puts "Контрагент: " + item['Контрагент']
+  puts "ДоговорКонтрагента: " + item['ДоговорКонтрагента']
+  puts "СтатьяДвиженияДенежныхСредств: " + item['СтатьяДвиженияДенежныхСредств']
+  puts "Ответственный: " + item['Ответственный']
+  puts "Описание: " + item['Описание']
+  puts "СостояниеЗаявки: " + item['СостояниеЗаявки']
+  puts "Комментарий: " + item['Комментарий']
+  puts "Примечание: " + item['Примечание']
+  puts "СуммаОплаты: " + item['СуммаОплаты']
+  puts "СуммаВзаиморасчетов: " + item['СуммаВзаиморасчетов']
+  puts "ДатаЗаявки: " + item['ДатаЗаявки']
+end
+
+SELECT * FROM clients WHERE (clients.id = 10) LIMIT 1
+
+<p>
+	<!--	<%= link_to 'Выгрузить данные в базу' , :action => 'UnloadTheDatabase' %> -->
+	</p>
+
+
+		<div id="cartBlock">
+			<%= observe_field "payment", 
+          :url => { :action => :update_quantity, :id => payment },
+          :on => "onchange",
+          :update => :cartBlock,
+          :with => 'quantity' %>
+		</div>
+	
+ Подключаем библиотеку SOAP4R
+require 'rubygems'
+gem 'soap4r-ruby1.9'
+require './defaultDriver.rb'
+
+serv = DailyInfoSoap.new
+
+serv.wiredump_dev = STDERR
+
+request = GetCursOnDateXML.new(DateTime.now)
+response = serv.getCursOnDateXML(request)
+items = response.getCursOnDateXMLResult.valuteData.valuteCursOnDate
+
+items.each do |item|
+  puts "---------------------------------"
+  puts "Название: " + item['Vname'].strip
+  puts "Числовой код: " + item['Vcode']
+  puts "Символьный код: " + item['VchCode']
+  puts "Номинал: " + item['Vnom']
+  puts "Курс: " + item['Vcurs']
+end
+
+
+<%= observe_field "payment", 
+          :url => { :action => :update_State, :id => payment },
+          :on => "onchange",
+          :update => :cartBlock,
+          :with => 'quantity' %>
+		</div>
+
+
+Fix for: can't convert Symbol to String when the code executes klass.
+
+.gitignore View file @ 11035d3
+...	 ...	
++.idea
+
+lib/soap/mapping/mapping.rb View file @ 11035d3
+...	 ...	
+@@ -252,7 +252,7 @@ def self.class2element(klass)
+252	 252	
+   def self.obj2element(obj)
+253	 253	
+     name = namespace = nil
+254	 254	
+     ivars = obj.instance_variables
+255	  	
+-    if ivars.include?('@schema_type')
+ 	 255	
++    if ivars.include?('@schema_type'.to_sym)
+256	 256	
+       name = obj.instance_variable_get('@schema_type')
+257	 257	
+     end
+258	 258	
+     if ivars.include?('@schema_ns')
+...	 ...	
+@@ -286,7 +286,7 @@ def self.get_attributes(obj)
+286	 286	
+     else
+287	 287	
+       rs = {}
+       obj.instance_variables.each do |ele|
+-        rs[ele.sub(/^@/, '')] = obj.instance_variable_get(ele)
+	
++        rs[ele.to_s.sub(/^@/, '')] = obj.instance_variable_get(ele)
+
+       end
+	
+       rs
+	
+     end
+...	 ...	
+@@ -315,7 +315,7 @@ def self.get_attribute(obj, attr_name)
+	
+       name = Mapping.safevarname(attr_name)
+	
+       if iv.include?("@#{name}")
+	
+         return obj.instance_variable_get("@#{name}")
+  	
+-      elsif iv.include?("@#{attr_name}")
+	
++      elsif iv.include?("@#{attr_name}".to_sym)
+	
+         return obj.instance_variable_get("@#{attr_name}")
+	
+       end
+	
+       if obj.respond_to?(name)
+4 ????? test/soap/marshal/marshaltestlib.rb View file @ 11035d3
+...	 ...	
+@@ -29,8 +29,8 @@ def marshal_equal(o1, msg = nil)
+
+     iv1 = o1.instance_variables.sort
+
+     iv2 = o2.instance_variables.sort
+
+     assert_equal(iv1, iv2)
+  	
+-    val1 = iv1.map {|var| o1.instance_eval {eval var}}
+	 
+-    val2 = iv1.map {|var| o2.instance_eval {eval var}}
+
++    val1 = iv1.map {|var| o1.instance_eval {eval var.to_s}}
+
++    val2 = iv1.map {|var| o2.instance_eval {eval var.to_s}}
+
+     assert_equal(val1, val2, msg)
+
+     if block_given?
+
+       assert_equal(yield(o1), yield(o2), msg)
+
+	   
+	   lib/soap/mapping/mapping.rb View file @ 5637ef1
+...	 ...	
+@@ -541,8 +541,8 @@ def protect_threadvars(*symbols)
+	
+   private
+	
+     def class_schema_variable(sym, klass)
+ 	
+-      var = "@@#{sym}".to_sym
+  	
+-      klass.class_variables.include?(var) ? klass.class_eval(var) : nil
+	
++      var = "@@#{sym}"
+	
++      klass.class_variables.include?(var.to_sym) ? klass.class_eval(var) : nil
+
+     end
+	
+ 
+	
+     def protect_mapping(opt)

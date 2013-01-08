@@ -1,0 +1,71 @@
+<%= form_for :order do |f| %>
+ <%= javascript_include_tag :defaults %>
+	<h1>Список заявок на расходование денежных средств</h1>
+
+	<p>
+		<%= link_to 'Получить список заявок' , :action => 'GetOrders' %>
+	</p>
+	
+	
+<table>
+    <tr>
+	  <td><strong> Выбрать: </strong> </td>
+      <td><strong> ДатаЗаявки: </strong> </td>
+	  <td><strong> НомерЗаявки: </strong> </td>
+	  <td><strong> Контрагент: </strong> </td>
+	  <td><strong> Договор контрагента: </strong> </td>
+	  <td><strong> Статья:</td>
+	  <td><strong> Сумма оплаты: </strong> </td>
+	  <td><strong> Сумма взаиморасчетов: </strong> </td>
+	  <td><strong> Состояние заявки: </strong> </td>
+	  <td><strong> Ответственный: </strong>	</td>
+	  <td> <strong> Описание: </strong>		</td>
+	  <td><strong> Примечание: </strong>	</td>
+	  <td><strong> Комментарий: </strong>	</td>
+	  <td><strong> Заявка на расходование:	</td>  
+    </tr>
+	
+  <% Order.all.each do |item| %>
+    <tr>
+	  <td> <input id=items.value name="chosen" type="checkbox" value=items.value /> </td>
+      <td><%= item['Date'] %></td>
+	  <td><%= item['Number'] %></td>
+	  <td><%= item['Contractor'] %></td>
+	  <td><%= item['Contract'] %></td>
+	  <td><%= item['Article'] %></td>
+	  <td><%= f.text_field item['AmountOfPayment'] %></td>
+	  <td><%= item['SumSettlement'] %></td>
+	  <td>
+		<div id="cartBlock">
+			<%= select_tag "payment", options_for_select( [ "Подготовлен", "Отклонен", "Отложен" ], item['State'] ) %>
+		</div>
+		
+		<%= observe_field :state_id,
+		  :frequency => 0.25,
+		  :url => { :controller => :orders_controller, :action => :update_State, :Application_ID => item['Application_ID'] },
+          :on => "onchange",
+          :update => :cartBlock,
+          :with => "'state_id='+value" %>
+		
+	  </td>
+	  <td><%= item['Responsible'] %></td>
+	  <td><%= item['Description'] %>  </td>
+	  <td><%= f.text_field item['Note'] %></td>
+	  <td><%= item['Comment'] %></td>
+	  <td><%= item['Application_ID'] %></td>  
+    </tr>
+  <% end %>
+</table>
+
+
+			
+	
+	
+	<strong>Text: <%= @req %> </strong>
+	<%= ord = Order.find(1) %>
+	<strong> <%= ord['State'] %>  </strong>
+
+	
+<% end %>
+
+

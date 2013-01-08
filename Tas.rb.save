@@ -1,0 +1,4 @@
+Class Tas f string_shuffle(self)
+  self.split('').?.?
+end
+end

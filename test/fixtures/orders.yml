@@ -1,0 +1,31 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  Date: 2013-01-03
+  Number: MyString
+  Contractor: MyString
+  Contract: MyString
+  Article: MyString
+  AmountOfPayment: MyString
+  SumSettlement: MyString
+  State: 
+  Responsible: MyString
+  Description: MyText
+  Note: MyText
+  Comment: MyText
+  Application_ID: MyString
+
+two:
+  Date: 2013-01-03
+  Number: MyString
+  Contractor: MyString
+  Contract: MyString
+  Article: MyString
+  AmountOfPayment: MyString
+  SumSettlement: MyString
+  State: 
+  Responsible: MyString
+  Description: MyText
+  Note: MyText
+  Comment: MyText
+  Application_ID: MyString
